@@ -1,59 +1,58 @@
-//Cargar rutas de la API
 const dotenv = require("dotenv").config();
-const codeRoutes = require("./Routes/Code");
-const gameRoutes = require("./Routes/Game");
-const roomRoutes = require("./Routes/Room");
-const teamRoutes = require("./Routes/Team");
-const questionRoutes = require("./Routes/Question");
-const fs = require("fs");
+const userRoutes = require("./routes/user");
+const watchRoutes = require("./routes/watch");
+const rateRoutes = require("./routes/rate");
+const Roles = require("./models/roles");
 
 //cargar modulos de node
-const cors = require("cors");
 const express = require("express");
-const { Server } = require("socket.io");
+const router = express.Router();
 
-//SOLO EN EL SERVIDOR
-var options = {
-  key: fs.readFileSync(
-    "/home/escapismolugo/domains/api.escapismolugo.com/ssl.key"
-  ),
-  cert: fs.readFileSync(
-    "/home/escapismolugo/domains/api.escapismolugo.com/ssl.cert"
-  ),
-};
-
+//ejecutar express (http) es el servidor.
 const app = express();
 
-//SOLO EN EL SERVIDOR
-const httpServer = require("https").createServer(options, app);
-
-//const httpServer = require("http").createServer(app);
-
-//SOLO EN EL SERVIDOR
-const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: "https://app.escapismolugo.com",
-    methods: ["GET", "POST"],
-  },
-})
-
-
-app.use(cors());
-
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 //middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-//añadir prefijos a rutas o cargar rutas
-app.use("/api/codes", codeRoutes);
+// CORS
+app.use(cors());
 
+app.use(bodyParser.json());
 
+//two new roles if not exists
 
-httpServer.listen(4001, () => {
-  console.log("listening on *:4001");
-});
+const roles = [
+  {
+    role: "User",
+  },
+  {
+    role: "Admin",
+  },
+];
+
+roles.map((rol) =>
+  Roles.findOne({ role: rol.role }, async (err, existRole) => {
+    if (err) {
+      console.log(err);
+    }
+    if (existRole) {
+      console.log("Rol inicial ya creado");
+    } else {
+      const newRole = new Roles({
+        role: rol.role,
+      });
+      const savedRole = await newRole.save();
+    }
+  })
+);
+
+app.use("/api", userRoutes);
+app.use("/api", watchRoutes);
+app.use("/api", rateRoutes);
 
 // Exportar módulo (fichero actual)
 module.exports = app;
