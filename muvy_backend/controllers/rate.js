@@ -20,10 +20,26 @@ const getRatedFilm = async (req, res) => {
   }
 };
 
+const getFilmRatings = async (req, res) => {
+  const { movieId } = req.params;
+
+  try {
+    await Rate.find({ movieId: movieId }, (err, found) => {
+      if (err) {
+        res.status(404).json({ message: "La película no se encuentra" });
+      }
+
+      if (found) {
+        res.status(200).json(found);
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const updateRate = async (req, res) => {
   const { userId, movieId, rate } = req.body;
-
-  console.log(req.body);
 
   if (!userId || !movieId || !rate) {
     res.status(404).json({ message: "Faltan datos" });
@@ -63,4 +79,5 @@ const updateRate = async (req, res) => {
 module.exports = {
   updateRate,
   getRatedFilm,
+  getFilmRatings,
 };

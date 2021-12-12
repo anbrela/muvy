@@ -2,6 +2,7 @@ const dotenv = require("dotenv").config();
 const userRoutes = require("./routes/user");
 const watchRoutes = require("./routes/watch");
 const rateRoutes = require("./routes/rate");
+const commentRoutes = require("./routes/comment");
 const Roles = require("./models/roles");
 
 //cargar modulos de node
@@ -53,6 +54,7 @@ roles.map((rol) =>
 app.use("/api", userRoutes);
 app.use("/api", watchRoutes);
 app.use("/api", rateRoutes);
+app.use("/api", commentRoutes);
 
 // Exportar módulo (fichero actual)
 module.exports = app;
