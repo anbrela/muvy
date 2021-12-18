@@ -1,14 +1,14 @@
-const Watch = require("../models/watch");
+const Fav = require("../models/favorite");
 const User = require("../models/user");
 
-const watchFilm = async (req, res) => {
+const favFilm = async (req, res) => {
   const { userId, movieId, posterPath } = req.body;
 
   if (!userId || !movieId) {
     res.status(404).json({ message: "Faltan datos" });
   }
 
-  const foundFilm = await Watch.findOne({
+  const foundFilm = await Fav.findOne({
     user: { _id: userId },
     movieId: movieId,
     posterPath: posterPath,
@@ -17,23 +17,23 @@ const watchFilm = async (req, res) => {
   if (foundFilm) {
     res.status(400).json({ message: "la pelicula ya está vista" });
   } else {
-    const watchedFilm = new Watch({
+    const newFav = new Fav({
       user: await User.findOne({ _id: userId }).exec(),
       movieId: movieId,
       posterPath: posterPath,
     });
 
-    const savedWatch = await watchedFilm.save();
+    const savedFav = await newFav.save();
 
-    res.status(200).json(savedWatch);
+    res.status(200).json(savedFav);
   }
 };
 
-const getWatchList = async (req, res) => {
+const getFavList = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    await Watch.find(
+    await Fav.find(
       {
         user: { _id: userId },
       },
@@ -56,7 +56,7 @@ const getWatchList = async (req, res) => {
   }
 };
 
-const removeWatchFilm = async (req, res) => {
+const removeFav = async (req, res) => {
   const { userId, movieId } = req.params;
 
   if (!userId || !movieId) {
@@ -64,13 +64,12 @@ const removeWatchFilm = async (req, res) => {
   }
 
   try {
-    const filmRemoved = await Watch.findOneAndRemove({
+    const filmRemoved = await Fav.findOneAndRemove({
       user: { _id: userId },
       movieId: movieId,
     }).exec();
 
     if (filmRemoved) {
-      console.log(filmRemoved);
       res.status(200).json(filmRemoved);
     } else {
       res.status(400).json({ message: "imposible eliminar" });
@@ -81,7 +80,7 @@ const removeWatchFilm = async (req, res) => {
 };
 
 module.exports = {
-  watchFilm,
-  getWatchList,
-  removeWatchFilm,
+  removeFav,
+  favFilm,
+  getFavList,
 };

@@ -33,7 +33,6 @@ const signup = async (req, res) => {
     }
 
     if (user) {
-      console.log(user);
       res
         .status(404)
         .json({ message: "El usuario registrado con ese email ya existe" });

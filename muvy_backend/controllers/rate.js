@@ -32,7 +32,7 @@ const getFilmRatings = async (req, res) => {
       if (found) {
         res.status(200).json(found);
       }
-    });
+    }).clone();
   } catch (e) {
     console.log(e);
   }

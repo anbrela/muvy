@@ -11,6 +11,10 @@ const watchSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    posterPath: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

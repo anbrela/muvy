@@ -1,31 +1,43 @@
-const Watch = require("../models/watch");
+const WatchList = require("../models/watchList");
 const User = require("../models/user");
 
-const watchFilm = async (req, res) => {
+const addFilm = async (req, res) => {
   const { userId, movieId, posterPath } = req.body;
 
   if (!userId || !movieId) {
     res.status(404).json({ message: "Faltan datos" });
   }
 
-  const foundFilm = await Watch.findOne({
-    user: { _id: userId },
-    movieId: movieId,
-    posterPath: posterPath,
-  }).exec();
+  try {
+    await WatchList.findOne(
+      {
+        user: { _id: userId },
+        movieId: movieId,
+      },
+      {},
+      {},
+      async (err, result) => {
+        if (err) {
+          console.log(err);
+        }
 
-  if (foundFilm) {
-    res.status(400).json({ message: "la pelicula ya está vista" });
-  } else {
-    const watchedFilm = new Watch({
-      user: await User.findOne({ _id: userId }).exec(),
-      movieId: movieId,
-      posterPath: posterPath,
-    });
+        if (result) {
+          res.status(400).json({ message: "la pelicula ya está vista" });
+        } else {
+          const addFilm = new WatchList({
+            user: await User.findOne({ _id: userId }).exec(),
+            movieId: movieId,
+            posterPath: posterPath,
+          });
 
-    const savedWatch = await watchedFilm.save();
+          const savedFilm = await addFilm.save();
 
-    res.status(200).json(savedWatch);
+          res.status(200).json(savedFilm);
+        }
+      }
+    ).clone();
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -33,7 +45,7 @@ const getWatchList = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    await Watch.find(
+    await WatchList.find(
       {
         user: { _id: userId },
       },
@@ -56,7 +68,7 @@ const getWatchList = async (req, res) => {
   }
 };
 
-const removeWatchFilm = async (req, res) => {
+const removeWatchListFilm = async (req, res) => {
   const { userId, movieId } = req.params;
 
   if (!userId || !movieId) {
@@ -64,13 +76,12 @@ const removeWatchFilm = async (req, res) => {
   }
 
   try {
-    const filmRemoved = await Watch.findOneAndRemove({
+    const filmRemoved = await WatchList.findOneAndRemove({
       user: { _id: userId },
       movieId: movieId,
     }).exec();
 
     if (filmRemoved) {
-      console.log(filmRemoved);
       res.status(200).json(filmRemoved);
     } else {
       res.status(400).json({ message: "imposible eliminar" });
@@ -81,7 +92,7 @@ const removeWatchFilm = async (req, res) => {
 };
 
 module.exports = {
-  watchFilm,
+  removeWatchListFilm,
   getWatchList,
-  removeWatchFilm,
+  addFilm,
 };

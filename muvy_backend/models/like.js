@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 
-const rateSchema = mongoose.Schema(
+const likeSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+    },
+    comment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
     },
     movieId: {
       type: String,
-      required: true,
-    },
-    rating: {
-      type: String,
-      required: true,
+      default: "",
     },
   },
   {
@@ -22,4 +21,4 @@ const rateSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Rate", rateSchema);
+module.exports = mongoose.model("Like", likeSchema);

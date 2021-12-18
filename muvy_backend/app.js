@@ -2,6 +2,8 @@ const dotenv = require("dotenv").config();
 const userRoutes = require("./routes/user");
 const watchRoutes = require("./routes/watch");
 const rateRoutes = require("./routes/rate");
+const favRoutes = require("./routes/favorite");
+const watchListRoutes = require("./routes/watchList");
 const commentRoutes = require("./routes/comment");
 const Roles = require("./models/roles");
 
@@ -53,6 +55,8 @@ roles.map((rol) =>
 
 app.use("/api", userRoutes);
 app.use("/api", watchRoutes);
+app.use("/api", favRoutes);
+app.use("/api", watchListRoutes);
 app.use("/api", rateRoutes);
 app.use("/api", commentRoutes);
 

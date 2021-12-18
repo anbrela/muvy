@@ -16,14 +16,26 @@ const commentSchema = mongoose.Schema(
       required: true,
     },
 
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Like",
+        default: [],
+      },
+    ],
 
-    dislikes: {
-      type: Number,
-      default: 0,
+    dislikes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Like",
+        default: [],
+      },
+    ],
+
+    isReply: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
 
     replies: [

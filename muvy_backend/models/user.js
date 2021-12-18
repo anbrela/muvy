@@ -39,6 +39,11 @@ const userSchema = mongoose.Schema(
       },
     ],
 
+    avatar: {
+      type: String,
+      required: false,
+    },
+
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

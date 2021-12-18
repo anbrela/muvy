@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const rateSchema = mongoose.Schema(
+const watchListSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,7 +11,7 @@ const rateSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    rating: {
+    posterPath: {
       type: String,
       required: true,
     },
@@ -22,4 +22,4 @@ const rateSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Rate", rateSchema);
+module.exports = mongoose.model("WatchList", watchListSchema);
